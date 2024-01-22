@@ -12,6 +12,7 @@ use App\Http\Controllers\SembakokeluarController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\SembakomasukController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -26,18 +27,27 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/sembako-masuk', [SembakomasukController::class, 'index'])->name('masuk');
         Route::post('/admin/sembako-masuk/store', [SembakomasukController::class, 'store'])->name('masuk.store');
         Route::get('/admin/sembako-masuk/move-to-keluar/{id}', [SembakomasukController::class, 'moveToKeluar'])->name('masuk.moveToKeluar');
-        
+        Route::get('/keluarkan/{id}', [SembakomasukController::class, 'keluarkanForm'])->name('keluar.form');
+        Route::post('/keluarkan/{id}', [SembakomasukController::class, 'keluarkan'])->name('keluar.keluarkan');
+                
         //route satuan
         Route::get('/admin/satuan', [UnitController::class, 'index'])->name('satuan');
         Route::post('/admin/satuan/store', [UnitController::class, 'store'])->name('satuan.store');
+        Route::put('/admin/satuan/update/{id}', [UnitController::class, 'update'])->name('satuan.update');
+        Route::delete('/admin/satuan/destroy/{id}', [UnitController::class, 'destroy'])->name('satuan.destroy');
 
         //route kategori
         Route::get('/admin/kategori', [CategoryController::class, 'index'])->name('kategori');
         Route::post('/admin/kategori', [CategoryController::class, 'store'])->name('kategori.store');
+        Route::put('/admin/kategori/update/{id}', [CategoryController::class, 'update'])->name('kategori.update');
+        Route::delete('/admin/kategori/destroy/{id}', [CategoryController::class, 'destroy'])->name('kategori.destroy');
 
         //route sembako keluar
         Route::get('/admin/sembako-keluar', [SembakokeluarController::class, 'index'])->name('keluar');
         Route::post('/admin/sembako-keluar/store', [SembakokeluarController::class, 'store'])->name('keluar.store');
+        Route::get('/keluarkan/{id}', [SembakokeluarController::class, 'keluarkanForm'])->name('keluar.form');
+        Route::post('/keluarkan/{id}', [SembakokeluarController::class, 'keluarkan'])->name('keluar.keluarkan');
+        
 
         //route spatie
         Route::resource('roles', RoleController::class);

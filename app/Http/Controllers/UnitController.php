@@ -80,17 +80,27 @@ class UnitController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'unit_name' => 'required',
+        ]);
+    
+        $unit = Unit::find($id);
+        $unit->unit_name = $request->input('unit_name');
+        $unit->save();
+    
+        return redirect()->route('satuan')->with('success', 'Data berhasil diperbarui.');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy($id)
     {
-        //
+        $unit = Unit::find($id);
+    
+        if (!$unit) {
+            return redirect()->route('satuan')->with('error', 'Data tidak ditemukan.');
+        }
+    
+        $unit->delete();
+    
+        return redirect()->route('satuan')->with('success', 'Data berhasil dihapus.');
     }
 }

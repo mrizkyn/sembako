@@ -38,7 +38,46 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $unit->unit_name }}</td>
                             <td>
+                                <span>
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editDataModal{{ $unit->id }}">
+                                        Edit
+                                    </button>
+                                </span>
+                                {{-- <span>
+                                    <form action="{{ route('satuan.destroy', $unit->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Hapus</button>
+                                    </form>
+                                </span> --}}
+                            
+                                <!-- Modal Edit -->
+                                <div class="modal fade" id="editDataModal{{ $unit->id }}" tabindex="-1" aria-labelledby="editDataModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editDataModalLabel">Edit Data</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{ route('satuan.update', $unit->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="mb-3">
+                                                        <label for="edit_unit_name">Nama Satuan:</label>
+                                                        <input type="text" class="form-control" id="edit_unit_name" name="unit_name" value="{{ $unit->unit_name }}" required>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
+                            
                         </tr>
                     @endforeach
                 </tbody>

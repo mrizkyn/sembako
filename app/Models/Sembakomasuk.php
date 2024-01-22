@@ -19,4 +19,8 @@ class Sembakomasuk extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function Sembakokeluar(){
+        return $this->hasMany(Sembakokeluar::class);
+    }
 }

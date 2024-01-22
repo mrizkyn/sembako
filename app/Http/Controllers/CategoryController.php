@@ -80,7 +80,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'category_name' => 'required',
+        ]);
+    
+        $category = Category::find($id);
+        $category->category_name = $request->input('category_name');
+        $category->save();
+    
+        return redirect()->route('kategori')->with('success', 'Data berhasil diperbarui.');
     }
 
     /**
@@ -89,8 +97,18 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+   // app/Http/Controllers/CategoryController.php
+public function destroy($id)
+{
+    $category = Category::find($id);
+
+    if (!$category) {
+        return redirect()->route('kategori.index')->with('error', 'Data tidak ditemukan.');
     }
+
+    $category->delete();
+
+    return redirect()->route('kategori')->with('success', 'Data berhasil dihapus.');
+}
+
 }

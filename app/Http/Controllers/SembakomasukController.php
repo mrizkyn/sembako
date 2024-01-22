@@ -6,8 +6,10 @@ use App\Models\Category;
 use App\Models\Sembakokeluar;
 use App\Models\Unit;
 use App\Models\Sembakomasuk;
+use Exception;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SembakomasukController extends Controller
 {
@@ -16,6 +18,54 @@ class SembakomasukController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function keluarkanForm($id)
+     {
+         $sembakomasuk = Sembakomasuk::findOrFail($id); // Menggunakan findOrFail agar melemparkan 404 jika tidak ditemukan
+         return view('admin.sembako.keluar.keluarkan', compact('sembakomasuk'));
+     
+     }
+
+     public function keluarkan(Request $request, $id)
+     {
+         $request->validate([
+             'out_date' => 'required|date',
+             'amount' => 'required|numeric',
+             'date' => 'required|date',
+             'name' => 'required|string',
+             'category_id' => 'required|exists:categories,id',
+             'unit_id' => 'required|exists:units,id',
+             'exp_date' => 'required|date',
+         ]);
+         try {
+             DB::beginTransaction();
+     
+             $sembakomasuk = Sembakomasuk::findOrFail($id);
+     
+             $sembakokeluar = new Sembakokeluar();
+             $sembakokeluar->out_date = $request->input('out_date');
+             $sembakokeluar->name = $sembakomasuk->name;
+             $sembakokeluar->category_id = $sembakomasuk->category_id;
+             $sembakokeluar->amount = $request->input('amount');
+             $sembakokeluar->unit_id = $sembakomasuk->unit_id;
+             $sembakokeluar->exp_date = $sembakomasuk->exp_date;
+             $sembakokeluar->date = $sembakomasuk->date;
+             $sembakokeluar->save();
+     
+             $sembakomasuk->amount -= $request->input('amount');
+             $sembakomasuk->save();
+     
+             DB::commit();
+     
+             return redirect()->route('masuk')->with('success', 'Data berhasil keluar.');
+         } catch (Exception $e) {
+             DB::rollBack();
+             Log::error($e->getMessage());
+             return redirect()->back()->withErrors(['msg' => 'Terjadi kesalahan saat mengeluarkan data.']);
+         }
+     }
+     
+
     public function index()
     {
         // $sembakomasuk = Sembakomasuk::All();
