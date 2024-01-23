@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/sembako-keluar/store', [SembakokeluarController::class, 'store'])->name('keluar.store');
         Route::get('/keluarkan/{id}', [SembakokeluarController::class, 'keluarkanForm'])->name('keluar.form');
         Route::post('/keluarkan/{id}', [SembakokeluarController::class, 'keluarkan'])->name('keluar.keluarkan');
-        
+        Route::post('/keluar/store', [SembakoKeluarController::class, 'store'])->name('sembako-keluar.store');        
 
         //route spatie
         Route::resource('roles', RoleController::class);

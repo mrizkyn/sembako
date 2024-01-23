@@ -21,11 +21,11 @@ class SembakokeluarController extends Controller
      */
     public function index()
     {
-        
+        $sembakomasuk = Sembakomasuk::All();
         $sembakokeluar = Sembakokeluar::OrderBy('out_date','desc')->get();
         $units = Unit::all();
         $categories = Category::all();
-        return view('admin.sembako.keluar.index', compact('sembakokeluar', 'units', 'categories'));
+        return view('admin.sembako.keluar.index', compact('sembakomasuk','sembakokeluar', 'units', 'categories'));
     }
 
     /**
@@ -92,10 +92,37 @@ class SembakokeluarController extends Controller
     }
     
 
-     public function store(Request $request)
-     {
-       
-     }
+    public function store(Request $request)
+    {
+        // Validate the form data
+        $request->validate([
+            'sembako_id' => 'required|exists:sembakomasuks,id',
+            'amount' => 'required|integer|min:1',
+            'outDate' => 'required|date',
+            'expDate' => 'required|date',
+            'date' => 'required|date',
+            'category_id' => 'required', // Adjust according to your actual field name
+            'unit_id' => 'required', // Adjust according to your actual field name
+            // Add more validation rules for additional fields as needed
+        ]);
+    
+        // Create a new SembakoKeluar instance
+        $sembakoKeluar = new SembakoKeluar;
+        $sembakoKeluar->category_id = $request->input('category_id');
+        $sembakoKeluar->unit_id = $request->input('unit_id');
+        $sembakoKeluar->out_date = $request->input('outDate');
+        $sembakoKeluar->amount = $request->input('amount');
+        $sembakoKeluar->sembakomasuk_id = $request->input('sembako_id');
+        $sembakoKeluar->exp_date = $request->input('expDate');
+        $sembakoKeluar->date = $request->input('date');
+        
+        // Save the data
+        $sembakoKeluar->save();
+
+        // You can add a success message or redirect to a specific page
+        return redirect()->back()->with('success', 'Data berhasil disimpan.');
+    }
+
      
      
     
