@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sembakokeluar extends Model
 {
-    protected $fillable = ['category_id', 'unit_id', 'name', 'date', 'exp_date', 'out_date', 'amount'];
+    protected $fillable = ['category_id', 'unit_id',  'out_date', 'amount'];
 
     public function unit()
     {

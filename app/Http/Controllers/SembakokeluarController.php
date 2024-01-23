@@ -71,11 +71,11 @@ class SembakokeluarController extends Controller
             $sembakokeluar = new Sembakokeluar();
             $sembakokeluar->out_date = $request->input('out_date');
             $sembakokeluar->name = $sembakomasuk->name;
-            $sembakokeluar->category_id = $sembakomasuk->category_id;
+            // $sembakokeluar->category_id = $sembakomasuk->category_id;
             $sembakokeluar->amount = $request->input('amount');
-            $sembakokeluar->unit_id = $sembakomasuk->unit_id;
-            $sembakokeluar->exp_date = $sembakomasuk->exp_date;
-            $sembakokeluar->date = $sembakomasuk->date;
+            // $sembakokeluar->unit_id = $sembakomasuk->unit_id;
+            // $sembakokeluar->exp_date = $sembakomasuk->exp_date;
+            // $sembakokeluar->date = $sembakomasuk->date;
             $sembakokeluar->save();
     
             $sembakomasuk->amount -= $request->input('amount');
@@ -96,13 +96,13 @@ class SembakokeluarController extends Controller
     {
         // Validate the form data
         $request->validate([
-            'sembako_id' => 'required|exists:sembakomasuks,id',
+            // 'sembako_id' => 'required|exists:sembakomasuks,id',
             'amount' => 'required|integer|min:1',
             'outDate' => 'required|date',
-            'expDate' => 'required|date',
-            'date' => 'required|date',
-            'category_id' => 'required', // Adjust according to your actual field name
-            'unit_id' => 'required', // Adjust according to your actual field name
+            // 'expDate' => 'required|date',
+            // 'date' => 'required|date',
+            // 'category_id' => 'required', // Adjust according to your actual field name
+            // 'unit_id' => 'required', // Adjust according to your actual field name
             // Add more validation rules for additional fields as needed
         ]);
     

@@ -81,7 +81,7 @@
                                 @endforeach
                             </select>
                         </div> 
-                        <!-- Input for the amount -->
+                    
                         <div class="form-group">
                             <label for="amountInput">Jumlah:</label>
                             <input type="number" class="form-control" id="amountInput" name="amount">

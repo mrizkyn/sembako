@@ -12,7 +12,8 @@ class Category extends Model
     public function Sembakomasuk(){
         return $this->hasMany(Sembakomasuk::class);
     }
-    public function Sembakokeluar(){
+    public function sembakokeluars()
+    {
         return $this->hasMany(Sembakokeluar::class);
     }
 }
