@@ -81,6 +81,30 @@
                                 @endforeach
                             </select>
                         </div> 
+                        <div class="form-group">
+                            <label for="sembakoSelect">tangg:</label>
+                            <select id="sembakoSelect" class="form-control select2">
+                                @foreach ($sembakomasuk as $sembako)
+                                    <option value="{{ $sembako->id }}">{{ $sembako->name }} - {{ $sembako->amount }}</option>
+                                @endforeach
+                            </select>
+                        </div> 
+                        <div class="form-group">
+                            <label for="sembakoSelect">Pilih Barang Sembako:</label>
+                            <select id="sembakoSelect" class="form-control select2">
+                                @foreach ($sembakomasuk as $sembako)
+                                    <option value="{{ $sembako->id }}">{{ $sembako->name }} - {{ $sembako->amount }}</option>
+                                @endforeach
+                            </select>
+                        </div> 
+                        <div class="form-group">
+                            <label for="sembakoSelect">Pilih Barang Sembako:</label>
+                            <select id="sembakoSelect" class="form-control select2">
+                                @foreach ($sembakomasuk as $sembako)
+                                    <option value="{{ $sembako->id }}">{{ $sembako->name }} - {{ $sembako->amount }}</option>
+                                @endforeach
+                            </select>
+                        </div> 
                     
                         <div class="form-group">
                             <label for="amountInput">Jumlah:</label>

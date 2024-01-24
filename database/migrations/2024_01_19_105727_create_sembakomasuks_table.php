@@ -18,8 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('unit_id');
             $table->string('name');
-            $table->date('date');
-            $table->date('out_date')->nullable();
+            $table->date('date')->nullable();
             $table->date('exp_date');
             $table->integer('amount');
             $table->timestamps();

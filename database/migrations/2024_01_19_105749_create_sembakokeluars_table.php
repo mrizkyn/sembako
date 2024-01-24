@@ -16,11 +16,7 @@ return new class extends Migration
         Schema::create('sembakokeluars', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('unit_id');
-            // $table->string('name');
-            // $table->date('date')->nullable();
             $table->date('out_date');
-            // $table->date('exp_date');
             $table->integer('amount');
             $table->unsignedBigInteger('sembakomasuk_id');
             $table->foreign('sembakomasuk_id')->references('id')->on('sembakomasuks');
