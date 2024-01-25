@@ -6,11 +6,16 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
-                @if ($errors->any())
-                <div class="alert alert-danger">
-                    Data Yang Anda Masukan Tidak Lengkap!
-                </div>
-            @endif
+            @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 
             @if (session('success'))
                 <div class="alert alert-success">
@@ -32,7 +37,7 @@
                         <th>Nama Barang</th>
                         <th>Kategori</th>
                         <th>Jumlah</th>
-                        <th>Satuan</th>
+                
                         <th>Tanggal Kadaluarsa</th>
                     </tr>
                 </thead>
@@ -41,11 +46,11 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $sk->Sembakomasuk->date }}</td>
-                            <td>{{ $sk->out_date }}</td>
-                            <td>{{ $sk-->Sembakomasuk->name }}</td>
+                            <td>{{ $sk->created_at }}</td>
+                            <td>{{ $sk->Sembakomasuk->name }}</td>
                             <td>{{ $sk->Category->category_name }}</td>
                             <td>{{ $sk->amount }}</td>
-                            <td>{{ $sk->Unit->unit_name }}</td> 
+                            
                             <td>{{ $sk->Sembakomasuk->exp_date }}</td>
                         
                         </tr>
@@ -75,43 +80,27 @@
                         <!-- Dropdown to select sembakomasuks -->
                         <div class="form-group">
                             <label for="sembakoSelect">Pilih Barang Sembako:</label>
-                            <select id="sembakoSelect" class="form-control select2">
+                            <select id="sembakoSelect" class="form-control select2" name="sembako_id">
                                 @foreach ($sembakomasuk as $sembako)
-                                    <option value="{{ $sembako->id }}">{{ $sembako->name }} - {{ $sembako->amount }}</option>
+                                    <option value="{{ $sembako->id }}" data-category="{{ $sembako->category->id }}" data-exp-date="{{ $sembako->exp_date }}">{{ $sembako->name }} - {{ $sembako->amount }}</option>
                                 @endforeach
                             </select>
                         </div> 
-                        <div class="form-group">
-                            <label for="sembakoSelect">tangg:</label>
-                            <select id="sembakoSelect" class="form-control select2">
-                                @foreach ($sembakomasuk as $sembako)
-                                    <option value="{{ $sembako->id }}">{{ $sembako->name }} - {{ $sembako->amount }}</option>
-                                @endforeach
-                            </select>
-                        </div> 
-                        <div class="form-group">
-                            <label for="sembakoSelect">Pilih Barang Sembako:</label>
-                            <select id="sembakoSelect" class="form-control select2">
-                                @foreach ($sembakomasuk as $sembako)
-                                    <option value="{{ $sembako->id }}">{{ $sembako->name }} - {{ $sembako->amount }}</option>
-                                @endforeach
-                            </select>
-                        </div> 
-                        <div class="form-group">
-                            <label for="sembakoSelect">Pilih Barang Sembako:</label>
-                            <select id="sembakoSelect" class="form-control select2">
-                                @foreach ($sembakomasuk as $sembako)
-                                    <option value="{{ $sembako->id }}">{{ $sembako->name }} - {{ $sembako->amount }}</option>
-                                @endforeach
-                            </select>
-                        </div> 
-                    
+                        <div class="mb-3">
+                            <label for="category">Kategori:</label>
+                            <input type="text" class="form-control" id="category" name="category_id" required readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exp_date">Kadaluarsa:</label>
+                            <input type="text" class="form-control" id="exp_date" name="exp_date" required readonly>
+                        </div>
                         <div class="form-group">
                             <label for="amountInput">Jumlah:</label>
-                            <input type="number" class="form-control" id="amountInput" name="amount">
+                            <input type="number" class="form-control" id="amountInput" name="amount" min=1 max="{{ $sembako->amount }}">
                         </div>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -123,75 +112,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 <!-- ... (your existing code) ... -->
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     $(document).ready(function () {
-        // Initialize DataTable and Select2
-        $('#accountsTable').DataTable();
-        $('.select2').select2();
-
-        // Show modal when the "Keluarkan Sembako" button is clicked
-        $('.btn-warning').on('click', function () {
-            $('#keluarModal').modal('show');
-        });
-
-        // Populate the dropdown dynamically (you may need to fetch data from the server)
-        var $sembakoSelect = $('#sembakoSelect');
-        var sembakoData = {!! json_encode($sembakomasuk) !!}; // Assuming you passed $sembakomasuks from the controller
-        sembakoData.forEach(function (item) {
-            $sembakoSelect.append('<option value="' + item.id + '">' + item.name + '</option>');
-        });
-
-        // Handle form submission
-        $('#keluarForm').submit(function (e) {
-            e.preventDefault();
-
-            var sembakoId = $sembakoSelect.val();
-            var amount = $('#amountInput').val();
-            var outDate = $('#outDateInput').val(); // Assuming you have an input for the date
-
-            // Validate the amount and date
-            if (amount <= 0 || !outDate) {
-                alert('Harap lengkapi semua kolom.');
-                return;
-            }
-
-            // Find the selected sembako in the data
-            var selectedSembako = sembakoData.find(function (item) {
-                return item.id == sembakoId;
-            });
-
-            // Validate if the amount is not greater than the available amount
-            if (amount > selectedSembako.amount) {
-                alert('Jumlah melebihi stok yang ada.');
-                return;
-            }
-
-            // Add CSRF token and other form fields to the form data
-            var formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('sembako_id', sembakoId);
-            formData.append('amount', amount);
-            formData.append('outDate', outDate);
-            formData.append('category_id', selectedSembako.category_id);
-            formData.append('unit_id', selectedSembako.unit_id);
-
-            // You can now handle the submission using AJAX
-            $.ajax({
-                url: '{{ route('sembako-keluar.store') }}',
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    // Handle the success response, e.g., display a message or refresh the page
-                    console.log(response);
-                    $('#keluarModal').modal('hide');
-                },
-                error: function (xhr, status, error) {
-                    // Handle the error response, e.g., display an error message
-                    console.error(xhr.responseText);
-                }
-            });
+        // Saat nilai dropdown berubah
+        $('#sembakoSelect').on('change', function () {
+            // Ambil nilai kategori dan tanggal kadaluarsa dari atribut data
+            var selectedCategory = $('option:selected', this).data('category');
+            var selectedExpDate = $('option:selected', this).data('exp-date');
+            
+            // Set nilai kategori dan tanggal kadaluarsa pada input
+            $('#category').val(selectedCategory);
+            $('#exp_date').val(selectedExpDate);
         });
     });
 </script>
