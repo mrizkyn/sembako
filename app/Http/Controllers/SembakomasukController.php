@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class SembakomasukController extends Controller
 {
@@ -91,31 +92,67 @@ class SembakomasukController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'category_id' => 'required',
-            'unit_id' => 'required',
-            'name' => 'required',
-            'date' => 'required',
-            'exp_date' => 'required',
-            'amount' => 'required',
-        ]);
+    // public function store(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'category_id' => 'required',
+    //         'unit_id' => 'required',
+    //         'name' => 'required',
+    //         'date' => 'required',
+    //         'exp_date' => 'required',
+    //         'amount' => 'required',
+    //     ]);
         
-        $sembakoMasuk = new Sembakomasuk();
-        $sembakoMasuk->category_id = $request->input('category_id');
-        $sembakoMasuk->unit_id = $request->input('unit_id');
-        $sembakoMasuk->name = $request->input('name');
-        $sembakoMasuk->date = $request->input('date');
-        $sembakoMasuk->exp_date = $request->input('exp_date');
-        $sembakoMasuk->amount = $request->input('amount');
+    //     $sembakoMasuk = new Sembakomasuk();
+    //     $sembakoMasuk->category_id = $request->input('category_id');
+    //     $sembakoMasuk->unit_id = $request->input('unit_id');
+    //     $sembakoMasuk->name = $request->input('name');
+    //     $sembakoMasuk->date = $request->input('date');
+    //     $sembakoMasuk->exp_date = $request->input('exp_date');
+    //     $sembakoMasuk->amount = $request->input('amount');
         
-        $sembakoMasuk->save();
+    //     $sembakoMasuk->save();
         
-        $request->session()->flash('success', 'Data Berhasil Disimpan');
-        return redirect('/admin/sembako-masuk');
+    //     $request->session()->flash('success', 'Data Berhasil Disimpan');
+    //     return redirect('/admin/sembako-masuk');
    
+    // }
+    public function store(Request $request)
+{
+    // Validate the form data
+    $validator = Validator::make($request->all(), [
+        'date' => 'required|date',
+        'items' => 'required|array|min:1',
+        'items.*.name' => 'required|string',
+        'items.*.category_id' => 'required|exists:categories,id',
+        'items.*.amount' => 'required|numeric',
+        'items.*.unit_id' => 'required|exists:units,id',
+        'items.*.exp_date' => 'required|date',
+        // ... tambahkan validasi untuk field lainnya
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput();
     }
+
+    // Proses setiap item yang dikirimkan
+    foreach ($request->input('items') as $item) {
+        // Buat instance SembakoMasuk untuk setiap item
+        $sembakoMasuk = new SembakoMasuk;
+        $sembakoMasuk->date = $request->input('date');
+        $sembakoMasuk->name = $item['name'];
+        $sembakoMasuk->category_id = $item['category_id'];
+        $sembakoMasuk->amount = $item['amount'];
+        $sembakoMasuk->unit_id = $item['unit_id'];
+        $sembakoMasuk->exp_date = $item['exp_date'];
+        // ... tambahkan atribut lainnya
+        $sembakoMasuk->save();
+    }
+
+    return redirect()->back()->with('success', 'Data berhasil disimpan.');
+}
 
     /**
      * Display the specified resource.
