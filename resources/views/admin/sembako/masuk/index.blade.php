@@ -5,11 +5,15 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        Data Yang Anda Masukan Tidak Lengkap!
-                    </div>
-                @endif
+            @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
                 @if (session('success'))
                     <div class="alert alert-success">
@@ -95,45 +99,50 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('masuk.store') }}" method="POST">
+                        <form action="{{ route('masuk.store') }}" method="POST" id="dynamicForm">
                             @csrf
                             <div class="mb-3">
                                 <label for="date">Tanggal Masuk:</label>
                                 <input type="date" class="form-control" id="date" name="date" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="name">Nama Barang:</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="category_id">Kategori:</label>
-                                <select class="form-control" id="category_id" name="category_id">
-                                    <option value="">Pilih Kategori</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="amount">Jumlah:</label>
-                                <input type="number" class="form-control" id="amount" name="amount" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="unit_id">Satuan:</label>
-                                <select class="form-control" id="unit_id" name="unit_id">
-                                    <option value="">Pilih Satuan</option>
-                                    @foreach ($units as $unit)
-                                        <option value="{{ $unit->id }}">{{ $unit->unit_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="exp_date">Tanggal Kadaluarsa:</label>
-                                <input type="date" class="form-control" id="exp_date" name="exp_date" required>
+                            <div class="product-container">
+                                <!-- Initial product input fields -->
+                                <div class="product-item">
+                                    <div class="mb-3">
+                                        <label for="name">Nama Barang:</label>
+                                        <input type="text" class="form-control" name="items[0][name]" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category_id">Kategori:</label>
+                                        <select class="form-control" name="items[0][category_id]">
+                                            <option value="">Pilih Kategori</option>
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="amount">Jumlah:</label>
+                                        <input type="number" class="form-control" name="items[0][amount]" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="unit_id">Satuan:</label>
+                                        <select class="form-control" name="items[0][unit_id]">
+                                            <option value="">Pilih Satuan</option>
+                                            @foreach ($units as $unit)
+                                                <option value="{{ $unit->id }}">{{ $unit->unit_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="exp_date">Tanggal Kadaluarsa:</label>
+                                        <input type="date" class="form-control" name="items[0][exp_date]" required>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
-                                <button id="btnSimpan" type="submit" class="btn btn-success">Simpan</button>
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                                <button type="button" class="btn btn-success" id="addProduct">Tambah Barang</button>
+                                <button type="submit" class="btn btn-success" id="btnSimpan">Simpan</button>
                             </div>
                         </form>
                     </div>
@@ -147,5 +156,14 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 
-
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#addProduct").click(function() {
+                var newProduct = $(".product-item:first").clone();
+                newProduct.find("input, select").val("");
+                newProduct.appendTo(".product-container");
+            });
+        });
+    </script>
 @endsection
