@@ -37,7 +37,7 @@
                                 <th>Jumlah</th>
                                 <th>Satuan</th>
                                 <th>Tanggal Kadaluarsa</th>
-                                <th>Aksi</th>
+                              
                             </tr>
                         </thead>
                         <tbody class="table-striped">
@@ -50,38 +50,7 @@
                                     <td>{{ $s->amount }}</td>
                                     <td>{{ $s->Unit->unit_name }}</td>
                                     <td>{{ $s->exp_date }}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#keluarkanModal{{ $s->id }}">Keluarkan</button>
-                                        
-                                        <!-- Modal Keluarkan -->
-                                        <div class="modal fade" id="keluarkanModal{{ $s->id }}" tabindex="-1" aria-labelledby="keluarkanModalLabel{{ $s->id }}" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="keluarkanModalLabel">Keluarkan Data</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form action="{{ route('keluar.keluarkan', $s->id) }}" method="POST">                                                            @csrf
-                                                            <div class="mb-3">
-                                                                <label for="out_date">Tanggal Keluar:</label>
-                                                                <input type="date" class="form-control" id="out_date" name="out_date" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="amount">Jumlah:</label>
-                                                                <input type="number" class="form-control" id="amount" name="amount" required>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="submit" class="btn btn-success">Keluarkan</button>
-                                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End Modal Keluarkan -->
-                                    </td>
+                                   
                                 </tr>
                             @endforeach
                         </tbody>
